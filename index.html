@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>First Sprint - Mine Sweeper</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body onload="initGame(level = 'Begginer')">
+
+    <!-- <div class="myElement" oncontextmenu="return false"></div> -->
+    <h1>My Mine Sweeper</h1>
+    <hr>
+
+    <ul class="game-features">
+        <li class="mine-counter">MINES <span></span></li>
+        <li>😍</li>
+        <li>TIMER <span></span></li>
+    </ul>
+
+
+
+    <div class="game-btns">
+        <button class="Begginer" onclick="initGame('Begginer')"><span>Begginer</span></button>
+        <button class="Medium" onclick="initGame('Medium')"><span>Medium</span></button>
+        <button class="Expert" onclick="initGame('Expert')"><span>Expert</span></button>
+
+    </div>
+
+    <table class="mine-sweeper">
+        <tbody class="mine-sweeper-cells">
+        </tbody>
+    </table>
+
+    <script src="js/utils.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>
+
+<!-- 'Medium'
+'Expert' -->

@@ -1,0 +1,21 @@
+table, td {
+    border: 2px solid black;
+}
+td {
+    border: 2px solid black;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+}
+
+td:hover {
+    cursor: pointer;
+}
+
+.game-features > li {
+    display: inline;
+}
+
+table span {
+    visibility: hidden;
+}
