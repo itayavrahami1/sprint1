@@ -1,21 +1,170 @@
+body{
+    background-color: rgb(225, 238, 199);
+}
+
+.mine-img{
+    height: 200px;
+    width: 100%;
+    background-image: url(../img/mines.jpg);
+}
+
+h1 {
+    text-align: center;
+    
+}
+
+h2 {
+    text-align: center;
+    height: 50px;
+}
+
+h2 span{
+    height: 50px;
+    min-width: 200px;
+    background-color: steelblue;
+    font-weight: bold;
+    padding: 15px auto;
+    border: solid 3px black;
+    margin: 20px 20px 20px;   
+}
+
 table, td {
     border: 2px solid black;
+}
+table {
+    margin: 30px auto;
 }
 td {
     border: 2px solid black;
     height: 25px;
     width: 25px;
     text-align: center;
+    background-color: darkgray;
 }
 
-td:hover {
-    cursor: pointer;
+.game-features , .game-btns{
+    text-align: center;
+    margin: 25px auto 50px;
 }
 
 .game-features > li {
     display: inline;
 }
 
+.emoji {
+    height: 75px;
+    width: 75px;
+    margin: auto 300px auto;
+    background-color: transparent;
+}
+
+
+.restart-btn{
+    font-size: 40px;
+    background-color: transparent;
+    height: 50px;
+    width: 50px;
+    border: transparent;
+    outline: none;
+}
+
+.restart-btn:hover{
+    cursor: pointer;
+}
+
+.mine-counter, .timer{
+    font-size: 30px;
+    font-family: Courier;
+    font-weight: bold;
+    position: absolute;
+    background-color: darkseagreen;
+    border: 3px solid black;
+    padding: 5px;
+}
+
+.mine-counter {
+    left: 75px;
+}
+
+.game-features .timer {
+    right: 75px;
+}
+
+.timer > span, .mine-counter > span {
+    color: brown;
+}
+
+.game-btns > li {
+    display: inline;
+}
+
+.Medium{
+    background-color: red;
+    font-weight: bold;
+    margin: auto 25px;  
+}
+.Begginer{
+    background-color: rgb(90, 99, 230);
+    font-weight: bold;
+    margin: auto 25px;  
+}
+.Expert{
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    margin: auto 25px;  
+}
+
+
+.game-btns button {
+    height: 40px;
+    width: 15%;
+    margin: auto;
+    font-size: 24px;
+    border-radius: 10%;
+}
+
+.game-btns .Begginer{
+    left: 200px;
+}
+.game-btns button:hover{
+    cursor: pointer;
+}
+
 table span {
     visibility: hidden;
 }
+
+.marked {
+    visibility: visible;
+}
+
+.clicked {
+    background-color: gray;
+}
+
+.game-hints {
+    position: absolute;
+    top: 200px;
+    list-style-type: none;
+}
+
+.game-hints h2{
+    text-decoration: underline;
+}
+
+.game-hints button{
+    font-size: 40px;
+    background-color: transparent;
+    height: 50px;
+    width: 50px;
+    border: transparent;
+    outline: none;
+}
+
+.game-hints button:hover{
+    cursor: pointer;
+}
+
+
+

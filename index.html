@@ -10,35 +10,40 @@
 
 <body onload="initGame(level = 'Begginer')">
 
-    <!-- <div class="myElement" oncontextmenu="return false"></div> -->
     <h1>My Mine Sweeper</h1>
     <hr>
-
+    <span></span>
     <ul class="game-features">
-        <li class="mine-counter">MINES <span></span></li>
-        <li>😍</li>
-        <li>TIMER <span></span></li>
+        <li class="mine-counter">MINES: <span></span></li>
+        <li class="emoji"><button class="restart-btn" onclick="restart()"><span class='emoji-figure'>😊</span></button></li><!--😍 -->
+        <li class="timer">TIMER: <span></span></li>
     </ul>
 
+    <ul class="game-btns">
+        <li><button class="Begginer" onclick="initGame('Begginer')"><span>Begginer</span></button></li>
+        <li><button class="Medium" onclick="initGame('Medium')"><span>Medium</span></button></li>
+        <li><button class="Expert" onclick="initGame('Expert')"><span>Expert</span></button></li>
+    </ul>
 
+    <ul class="game-hints">
+        <h2>Hints</h2>
+        <li><button class="hint-1" onclick="_getHint(this)"><span>💡</span></button></li>
+        <li><button class="hint-2" onclick="_getHint(this)"><span>💡</span></button></li>
+        <li><button class="hint-2" onclick="_getHint(this)"><span>💡</span></button></li>
+    </ul>
 
-    <div class="game-btns">
-        <button class="Begginer" onclick="initGame('Begginer')"><span>Begginer</span></button>
-        <button class="Medium" onclick="initGame('Medium')"><span>Medium</span></button>
-        <button class="Expert" onclick="initGame('Expert')"><span>Expert</span></button>
-
-    </div>
-
-    <table class="mine-sweeper">
+    <h2><span>Let's Play</span></h2>
+    <table class="mine-sweeper" oncontextmenu="event.preventDefault();">
         <tbody class="mine-sweeper-cells">
         </tbody>
     </table>
+
+    <div class="mine-img">
+        <!-- <img src="img/mines.jpg"> -->
+    </div>
 
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
 </body>
 
 </html>
-
-<!-- 'Medium'
-'Expert' -->
