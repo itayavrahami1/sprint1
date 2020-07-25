@@ -12,27 +12,28 @@ var gGame;
 var gTimerInterval;
 var gStart;
 var gMinesLocs;
-var gShownCellCounter;
-var gEndOfGame;
+var gEndOfGame; //Before restart bottun
+var gDeltaT;
 
 
 // TODO - initGame() - function called when page uplaod - intitiate the game and variables
 function initGame(level = 'Beginner') {
     gEndOfGame = false;
-    // gFlagedLocs = [];
-    _resetTimet();
-    gShownCellCounter = 0
+    document.querySelector('.emoji-figure').innerText = '😊';
+    _resetTimer();
     clearInterval(gTimerInterval);
     gLevel = _getGameLevel(level);
     gGame = {
         isOn: false,
         shownCount: 0,
         markedCount: 0,
-        secsPassed: 0
+        secsPassed: 0,
+        isHint: false
     }
     gBoard = buildBoard();
-    renderBoard(gBoard)
-
+    renderBoard(gBoard);
+    renderHints();//render the hints
+    renderLives();//render the lives 
 }
 
 
@@ -117,6 +118,13 @@ function getMinesNegsCount(board, posI, posJ) { // MAYBE CHANGE THE ROWIDX,COLID
 
 // TODO - cellClicked(elCell, i, j) - support selecting cell (td).
 function cellClicked(elCell, i, j) {
+    // gGame.secsPassed = gDeltaT; //updating secPassed from the gDeltaT var in the setIntevarl() function
+    // console.log(gGame.secsPassed);
+    // console.log(gDeltaT);
+    // debugger
+    // if (gGame.secsPassed && !gGame.isOn) return; // NEED TO CHECK WHY gGame.secsPassed DONT UPDATE FROM _NYTIMER(). THEN SAVE THE gEndOfGame variable. for the end of the game - only after restrat can continue play. 
+                                    //dont use gGame.isOn because in the first click it (gGame.isOn) false and the need to init the game from this
+                                    // function (cell clicke and then re-render the board - first click coudlwt be a mine)
     if (gEndOfGame) return;
     var cell = gBoard[i][j];
     if (cell.isMarked) return; // return if the cell is marked with flag
@@ -137,10 +145,18 @@ function cellClicked(elCell, i, j) {
         }
         setMinesNegsCount(gBoard); //updating the cell minesAroundCount on the board
         renderBoard(gBoard);
+    }
 
+    
+    // if clicked with hint -ADD CHANGE IMAGE AND OPTION TO ON\OFF HINT. JUST AFTER HINT USED - HIDDEN
+    if (gGame.isHint && gLevel.HINTS){
+        _showCells(i,j);
+        gLevel.HINTS--;
+        return
     }
 
     // if clicked on mine - do this..
+    // TODO - support lives option
     if (cell.isMine) {
         //TODO - reveal all mines
         gGame.isOn = false;
@@ -149,18 +165,17 @@ function cellClicked(elCell, i, j) {
     }
 
     cell.isShown = true; // changing cell property to shown
-    if (cell.isShown) gShownCellCounter++; // if a cell is shown count up
+    if (cell.isShown) gGame.shownCount++; // if a cell is shown count up
     // if the cell num of Negs is 0 - do..
     if (cell.minesAroundCount === 0) {
-        var negs = _getNegsCoords(gBoard, i, j);
-        revealNegs(gBoard, negs); // function that reveals the negs of a cell with minesAroundCount = 0
+        _turnCellToShown(gBoard, i, j);
+        _revealShown(gBoard);
     }
 
     // re-selecting the cell because of the board re-rendering in the first click (to assure no mine is clicked in first click)
     if (firstClick) {
         var elCell = document.querySelector('#cell-' + i + '-' + j);
         firstClick = false;
-
     }
 
     elCell.classList.add('clicked');
@@ -197,31 +212,23 @@ function getMinesLoc(firstCEllI, firstCellJ) {
 
 // TODO - cellMarked(elCell) - When cell is marked
 function cellMarked(elCell, event, i, j) {
+    // gGame.secsPassed = gDeltaT; //updating secPassed from the gDeltaT var in the setIntevarl() function
+    // if (gGame.secsPassed && !gGame.isOn) return;
+    // debugger
     if (gEndOfGame) return;
     if (event.button === 0) return;
     if (!gGame.isOn) return;
     var elSpan = elCell.querySelector('span');
     var cell = gBoard[i][j];
-    var revealContent; // if true -  reveals the cell content
-
-    console.log('markCount', (gGame.markedCount + 1));
     // if numOfFlags larger that numOfMines cant mark
-    if (!((gGame.markedCount + 1) > gLevel.MINES)) {
-        cell.isMarked = !cell.isMarked;
-    }
-    
-    if (cell.isMarked && ((gGame.markedCount) < gLevel.MINES)) { // marked and numOfFlags smaller than numOfMines
-        console.log('from if', cell.isMarked);
+    if (!cell.isMarked && ((gGame.markedCount + 1) > gLevel.MINES)) return;
+    // debugger
+    if (!cell.isMarked) { // marked and numOfFlags smaller than numOfMines will put a flag
         elSpan.innerText = FLAG;
         elSpan.classList.add('marked');//add and remove marked class - visibility
+        cell.isMarked = !cell.isMarked;
         gGame.markedCount++;
-    } else if (!((gGame.markedCount + 1) > gLevel.MINES)) { // MAYBE Unnecessary
-        console.log('from first else if', cell.isMarked);
-        elSpan.innerText = cell.minesAroundCount;
-        elSpan.classList.remove('marked');//add and remove marked class - visibility
-        gGame.markedCount--;
-    } else if (cell.isMarked && ((gGame.markedCount + 1) > gLevel.MINES)){ // taking of the flag if numOfFlags equal numOfMines
-        console.log('from second else if', cell.isMarked);
+    } else if (cell.isMarked) { // if the cell is marked - with flag - and the number of flags is equal to the number of mines, take off the flag
         elSpan.innerText = cell.minesAroundCount;
         elSpan.classList.remove('marked');//add and remove marked class - visibility
         cell.isMarked = !cell.isMarked;
@@ -234,30 +241,10 @@ function cellMarked(elCell, event, i, j) {
     elCounter.querySelector('span').innerText = (gLevel.MINES - gGame.markedCount);
     checkEndGame();
 }
-
-function revealNegs(board, negs) {
-    var negCoord;
-    var elSpan;
-    var elCell;
-    for (var idx = 0; idx < negs.length; idx++) {
-        negCoord = negs[idx];
-        var negCell = board[negCoord.i][negCoord.j];
-        if (negCell.isShown || negCell.isMarked) continue;
-        negCell.isShown = true; // changing the js cell propery to shown 
-        var negClassStr = '.span-' + negCoord.i + '-' + negCoord.j;
-        var cellIdStr = '#cell-' + negCoord.i + '-' + negCoord.j;
-        elSpan = document.querySelector(negClassStr); // for inner text use
-        elCell = document.querySelector(cellIdStr); // for clickeng the cell
-        elCell.classList.add('clicked'); // clicking the cell
-        elSpan.style.visibility = 'visible'; // renders the cell to visible
-        gShownCellCounter++;
-    }
-}
-
 // TODO - checkGameOver() - check if the game is still on
 function checkEndGame() {
     if (gGame.isOn) {
-        if ((gShownCellCounter + gGame.markedCount === gLevel.SIZE ** 2)) {
+        if ((gGame.shownCount + gGame.markedCount === gLevel.SIZE ** 2)) {
             clearInterval(gTimerInterval);
             gGame.isOn = false;
             gEndOfGame = true;
@@ -268,6 +255,7 @@ function checkEndGame() {
         _revealMines();
         clearInterval(gTimerInterval);
         document.querySelector('h2 span').innerText = 'You Loose! Try Again!';
+        // gGame.isOn = false;
         gEndOfGame = true;
         document.querySelector('.emoji-figure').innerText = '🤯';
         // checks if all the flages are indeed mines and place X if the flag was wrong
@@ -279,7 +267,3 @@ function checkEndGame() {
         }
     }
 }
-
-
-
-

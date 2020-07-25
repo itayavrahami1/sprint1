@@ -25,12 +25,8 @@
         <li><button class="Expert" onclick="initGame('Expert')"><span>Expert</span></button></li>
     </ul>
 
-    <ul class="game-hints">
-        <h2>Hints</h2>
-        <li><button class="hint-1" onclick="_getHint(this)"><span>💡</span></button></li>
-        <li><button class="hint-2" onclick="_getHint(this)"><span>💡</span></button></li>
-        <li><button class="hint-2" onclick="_getHint(this)"><span>💡</span></button></li>
-    </ul>
+    <ul class="game-hints"></ul>
+    <ul class="game-lives"></ul>
 
     <h2><span>Let's Play</span></h2>
     <table class="mine-sweeper" oncontextmenu="event.preventDefault();">
@@ -44,6 +40,7 @@
 
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
+    <script src="tests/recursionReveal.js"></script>
 </body>
 
 </html>
